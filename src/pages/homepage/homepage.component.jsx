@@ -6,7 +6,7 @@ const HomePage = () => (
 
     // homepage outside container
     <div className= "homepage"> 
-       <Directory/>
+       <Directory />
     </div>
 )
 
