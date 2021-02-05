@@ -1,56 +1,47 @@
 import './App.css';
-import {Switch, Route ,Link} from 'react-router-dom';
+import React, { Component } from 'react';
+import {Switch, Route } from 'react-router-dom';
 import HomePage from "./pages/homepage/homepage.component";
 import ShopPage from './pages/shop/shop.component';
+import Header from './components/header/header.component';
+import SignInAndSignUp from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
+import {auth} from './firebase/firebase.utils';
 
 
+class App extends Component {
+  constructor(){
+    super();
 
-//Examples
+    this.state= {
+      currentUser : null
+    }
+  }
+  unsubscribeFromAuth = null;
+  componentDidMount(){
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
+      this.setState({ currentUser : user });
 
-// const HomePages = props => {
-//   console.log(props)
-//   return(
-//   <div> 
-//   <button onClick={() => props.history.push('/topics')}>Topics</button>
-//   <Link to='/topics'>Topics</Link><h1>Homepage</h1> </div>
-//   )
-//   }
-// const TopicsList = (props) =>{
-//   console.log(props)
-//   return(
-//     <div>
-//     <Link to="/">Back To Homepage</Link>
-//       <h1> TopicsList Page</h1>
-//       <Link to= {`${props.match.url}/13`}></Link>
-//       <Link to= {`${props.match.url}/14`}></Link>
-//       <Link to= {`${props.match.url}/15`}></Link>
-//     </div>
-//   )
-// }
+      console.log(user);
+    })
+  }
 
-// const TopicDetail = (props) => {
-//   console.log(props);
-//  return (
-//     <div><h1>Topic Detail Page {props.match.params.topicId}</h1></div>
-//   )
-// }
+  componentWillUnmount(){
+    this.unsubscribeFromAuth();
+  }
+  render() {
 
-function App() {
-  return (
-    <div className='app'>
-    <Switch> 
-    <Route exact path= '/' component={HomePage}></Route>
-    <Route path= '/shop' component={ShopPage}></Route>
-</Switch>
-
-    {/* example */}
-    
-   {/*     
-    <Route exact path='/' component={HomePages}></Route>
-    <Route exact path= '/topics' component={TopicsList}></Route>
-    <Route path= '/topics/:topicId' component={TopicDetail}></Route> */}
-    </div>
-  );
+    return (
+      <div className='app'>
+      <Header currentUser={this.state.currentUser}/>
+      <Switch> 
+      <Route exact path= '/' component={HomePage}></Route>
+      <Route path= '/shop' component={ShopPage}></Route>
+      <Route path= '/signIn' component={SignInAndSignUp}></Route>
+  </Switch>
+      </div>
+    );
+  }
+  
 }
 
 export default App;
